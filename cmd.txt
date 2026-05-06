@@ -1,0 +1,9 @@
+confi t
+hostname R1
+int Gi2
+ip add 1.1.1.1 255.255.255.0
+no sh
+exit
+vlan10
+des VLAN10
+exit

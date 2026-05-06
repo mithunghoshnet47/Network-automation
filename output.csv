@@ -1,0 +1,10 @@
+COMMAND,STATUS
+confi t,confi t
+hostname R1,hostname R1
+int Gi2,int Gi2
+ip add 1.1.1.1 255.255.255.0,ip add 1.1.1.1 255.255.255.0
+no sh,no sh
+exit,exit
+vlan10,FAILURE
+des VLAN10,FAILURE
+exit,exit

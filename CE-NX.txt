@@ -1,0 +1,1480 @@
+PIC000MLP02#sh run
+Building configuration...
+
+Current configuration : 39592 bytes
+!
+! Last configuration change at 20:16:55 UTC Sat Feb 7 2026 by X01567491_net
+!
+upgrade fpd auto
+version 12.2
+no service pad
+service tcp-keepalives-in
+service tcp-keepalives-out
+service timestamps debug datetime msec localtime show-timezone
+service timestamps log datetime msec localtime show-timezone
+service password-encryption
+service sequence-numbers
+service counters max age 5
+!
+hostname PIC000MLP02
+!
+boot-start-marker
+boot system flash sup-bootflash:s72033-ipsvervicesk9_wan-mz.122-33.SX10.bin
+boot system disk1:s72033-ipsvervicesk9_wan-mz.122-33.SX10.bin
+boot-end-marker
+!
+logging snmp-authfail
+logging buffered 128000
+logging rate-limit console 10
+enable secret 5 $1$TSY4$xk5EYSehDOShgZGC01T8u0
+!
+username local secret 5 $1$136y$Y9VQCOq7YfamtuO1lB3X71
+username cisco privilege 15 password 7 03270A1805001D1C5A58
+aaa new-model
+!
+aaa authentication attempts login 1
+aaa authentication login default group tacacs+ local
+aaa authentication login no_tacacs none
+aaa authentication enable default group tacacs+ enable
+aaa authorization console
+aaa authorization config-commands
+aaa authorization exec default group tacacs+ none
+aaa authorization commands 1 default group tacacs+ none
+aaa authorization commands 15 default group tacacs+ local
+aaa accounting update newinfo
+aaa accounting exec default start-stop group tacacs+
+aaa accounting commands 0 default start-stop group tacacs+
+aaa accounting commands 1 default start-stop group tacacs+
+aaa accounting commands 15 default start-stop group tacacs+
+aaa accounting connection default start-stop group tacacs+
+aaa accounting system default start-stop group tacacs+
+!
+aaa session-id common
+platform system controller reset-threshold 5
+clock summer-time GMT recurring
+logging event link-status default
+no ip source-route
+!
+ip tcp synwait-time 5
+no ip bootp server
+ip ssh time-out 60
+ip ssh authentication-retries 2
+ip ssh source-interface Vlan949
+ip ssh logging events
+ip ssh version 2
+no ip domain-lookup
+ip domain-name nd.barcapint.com
+login block-for 1800 attempts 10 within 30
+udld enable
+!
+vtp domain PIC
+vtp mode transparent
+no mls acl tcam share-global
+mls netflow interface
+mls rate-limit unicast acl vacl-log 200
+mls cef error action reset
+
+!
+spanning-tree mode rapid-pvst
+spanning-tree portfast edge bpduguard default
+no spanning-tree optimize bpdu transmission
+spanning-tree extend system-id
+spanning-tree vlan 949-955 priority 8192
+diagnostic bootup level complete
+no diagnostic cns publish
+no diagnostic cns subscribe
+access-list 40 deny   any log
+access-list 41 permit 172.21.115.194
+access-list 41 permit 172.18.115.193
+access-list 41 permit 172.21.120.240
+access-list 41 permit 172.18.120.240
+access-list 41 deny   any log
+access-list 42 deny   any log
+access-list 43 deny   any log
+access-list 44 permit 172.21.115.194
+access-list 44 permit 172.18.115.193
+access-list 44 permit 10.252.123.8
+access-list 44 permit 10.252.123.4
+access-list 44 permit 10.252.123.6
+access-list 44 permit 10.252.123.2
+access-list 44 deny   any log
+access-list 91 permit 172.21.115.194
+access-list 91 remark Management access to Devices via Jump server!!!
+access-list 91 permit 172.21.115.193
+access-list 91 permit 172.18.120.238
+access-list 91 permit 172.18.120.239
+access-list 91 permit 172.21.120.239
+access-list 91 permit 172.21.120.238
+access-list 91 permit 172.21.120.240
+access-list 91 permit 172.18.120.240
+access-list 95 remark NTP ACL
+access-list 95 permit 172.21.115.194
+access-list 95 permit 172.18.115.193
+access-list 95 permit 10.252.123.8
+access-list 95 permit 10.252.123.4
+access-list 95 permit 10.252.123.6
+access-list 95 permit 10.252.123.2
+access-list 95 deny   any log
+access-list 98 permit 198.242.107.0 0.0.0.127
+access-list 98 permit 172.18.120.0 0.0.0.255
+access-list 98 permit 172.21.120.0 0.0.0.255
+access-list 98 deny   any log
+access-list 99 deny   any
+!
+redundancy
+ main-cpu
+  auto-sync running-config
+ mode sso
+!
+ip access-list extended AL_OOB_NETWORK_MANAGEMENT
+permit udp any host 224.0.0.2 eq 1985
+permit icmp any 172.18.112.0 0.0.15.255
+permit tcp any eq telnet 172.18.112.0 0.0.15.255
+permit tcp any eq 22 172.18.112.0 0.0.15.255
+permit tcp any eq 443 172.18.112.0 0.0.15.255
+permit tcp any eq 4443 172.18.112.0 0.0.15.255
+permit tcp any eq 8443 172.18.112.0 0.0.15.255
+permit udp any host 172.18.115.193 eq 7162
+permit udp any host 172.18.115.194 eq 7162
+permit udp any host 172.21.115.194 eq 7162
+permit udp any eq snmp host 172.18.115.193
+permit udp any eq snmp host 172.18.115.194
+permit udp any eq snmp host 172.21.115.194
+permit udp any host 172.18.114.1 eq syslog
+permit tcp any host 172.18.120.1 eq tacacs
+permit tcp any host 172.18.120.2 eq tacacs
+permit tcp any host 172.18.120.3 eq tacacs
+permit udp any host 172.18.115.1 eq ntp
+permit tcp any eq 1099 host 172.18.120.9
+permit tcp any eq 1099 host 172.18.120.10
+permit ip any host 172.18.115.130
+permit udp host 224.0.0.2 eq 1985 any
+permit icmp 172.18.112.0 0.0.15.255 any
+permit tcp 172.18.112.0 0.0.15.255 any eq telnet
+permit tcp 172.18.112.0 0.0.15.255 any eq 22
+permit tcp 172.18.112.0 0.0.15.255 any eq 443
+permit tcp 172.18.112.0 0.0.15.255 any eq 4443
+permit tcp 172.18.112.0 0.0.15.255 any eq 8443
+permit udp host 172.18.115.193 eq 7162 any
+permit udp host 172.18.115.194 eq 7162 any
+permit udp host 172.21.115.194 eq 7162 any
+permit udp host 172.18.115.193 any eq snmp
+permit udp host 172.18.115.194 any eq snmp
+permit udp host 172.21.115.194 any eq snmp
+permit udp host 172.18.114.1 eq syslog any
+permit tcp host 172.18.120.1 eq tacacs any
+permit tcp host 172.18.120.2 eq tacacs any
+permit tcp host 172.18.120.3 eq tacacs any
+permit udp host 172.18.115.1 eq ntp any
+permit ip host 172.18.115.130 any
+permit tcp any range 1097 1099 host 172.18.120.9
+permit tcp any range 1097 1099 host 172.18.120.10
+permit tcp host 172.18.120.9 any range 1097 1099
+permit tcp host 172.18.120.10 any range 1097 1099
+permit ip host 172.18.115.196 any
+permit ip any host 172.18.115.196
+permit udp host 172.18.120.6 172.18.112.0 0.0.15.255 eq snmp
+permit udp 172.18.112.0 0.0.15.255 eq snmp host 172.18.120.6
+permit udp any host 172.18.115.193 eq snmptrap
+permit udp any host 172.18.115.194 eq snmptrap
+permit udp any host 172.21.115.194 eq snmptrap
+permit udp any host 172.18.115.193 eq syslog
+permit udp any host 172.18.115.194 eq syslog
+permit udp any host 172.21.115.194 eq syslog
+permit udp host 172.18.120.240 172.18.126.0 0.0.1.255 eq snmp
+permit udp 172.18.126.0 0.0.1.255 eq snmp host 172.18.120.240
+permit ip 172.18.126.0 0.0.1.255 host 172.18.120.82
+permit ip host 172.18.120.82 172.18.126.0 0.0.1.255
+permit udp any host 172.18.115.193 eq ntp
+permit udp host 172.18.115.193 eq ntp any
+permit udp any host 172.21.115.194 eq ntp
+permit udp host 172.21.115.194 eq ntp any
+permit ip 172.18.126.0 0.0.1.255 host 172.21.120.238
+permit ip 172.18.126.0 0.0.1.255 host 172.21.120.239
+permit ip 172.18.126.0 0.0.1.255 host 172.18.120.238
+permit ip 172.18.126.0 0.0.1.255 host 172.18.120.239
+permit ip host 172.21.120.238 172.18.126.0 0.0.1.255
+permit ip host 172.21.120.239 172.18.126.0 0.0.1.255
+permit ip host 172.18.120.238 172.18.126.0 0.0.1.255
+permit ip host 172.18.120.239 172.18.126.0 0.0.1.255
+permit udp any host 172.18.115.2 eq ntp
+permit udp host 172.18.115.2 eq ntp any
+permit udp host 172.18.127.4 host 157.83.228.70 eq 9996
+permit udp host 172.18.127.4 host 157.83.228.207 eq 9996
+permit udp host 172.18.127.3 host 157.83.228.70 eq 9996
+permit udp host 172.18.127.3 host 157.83.228.207 eq 9996
+permit udp host 172.18.127.133 host 157.83.228.70 eq 9996
+permit udp host 172.18.127.133 host 157.83.228.207 eq 9996
+permit udp host 172.18.127.134 host 157.83.228.70 eq 9996
+permit udp host 172.18.127.134 host 157.83.228.207 eq 9996
+permit udp host 172.18.127.7 host 157.83.228.207 eq 9996
+permit udp host 172.18.127.7 host 157.83.228.70 eq 9996
+!
+v!
+vlan access-map AM_OOB_NETWORK_MANAGEMENT 10
+ match ip address AL_OOB_NETWORK_MANAGEMENT
+ action forward
+!
+vlan filter AM_OOB_NETWORK_MANAGEMENT vlan-list 950-955
+vlan internal allocation policy ascending
+vlan access-log ratelimit 200
+!
+vlan 666
+ state suspend
+!
+vlan 949
+ name oob_untrust_172.18.126.0/28
+!
+vlan 950
+name oob_untrust_172.18.126.64/26
+!
+vlan 951
+ name oob_untrust_172.18.126.128/26
+!
+vlan 952
+ name oob_untrust_172.18.127.0/26
+!
+vlan 953
+ name oob_untrust_172.18.127.64/26
+!
+vlan 954
+ name oob_untrust_172.18.127.128/26
+!
+vlan 955
+ name oob_untrust_172.18.127.192/26
+!
+interface Port-channel1
+ description **Port-channel to USPI1-DR2C2-OOBFF-02 (port 26, 27)**
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ load-interval 30
+ snmp trap mac-notification change added
+ snmp trap mac-notification change removed
+ no snmp trap link-status
+!
+interface Port-channel2
+ description Port-Channel to USPIL-D02C2-OOBFF-102 (port 26, 27)
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ load-interval 30
+ snmp trap mac-notification change added
+ snmp trap mac-notification change removed
+ no snmp trap link-status
+
+!
+interface GigabitEthernet1/1
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/2
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/3
+ no ip address
+ shutdown
+!
+interface GigabitEthernet1/4
+ no ip address
+ shutdown
+!
+!
+interface GigabitEthernet1/5
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/6
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/7
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/8
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+!
+interface GigabitEthernet1/9
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/10
+ description DD=USPIL-D02C2-OOBFF-02 DI=Port26
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ no snmp trap link-status
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/11
+ description DD=USPIL-D02C2-OOBFF-02 DI=Port27
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ no snmp trap link-status
+ channel-group 1 mode active
+!
+interface GigabitEthernet1/12
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/13
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/14
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/15
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/16
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/17
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/18
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/19
+ description DD-USPI1-DR2C2-OOBFF-02 DI-Port26
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ no snmp trap link-status
+ channel-group 2 mode active
+!
+interface GigabitEthernet1/20
+ description DD=USPIL-D02C2-OOBFF-102 DI-Port27
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ no snmp trap link-status
+ channel-group 2 mode active
+!
+interface GigabitEthernet1/21
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/22
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/23
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet1/24
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet5/1
+ description uspil-d02c2-oobsn-251 Port 32
+ switchport
+ speed nonegotiate
+!
+interface GigabitEthernet5/2
+ no ip address
+ shutdown
+!
+interface GigabitEthernet8/1
+ description to picwebrr56 f0
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/2
+ description CHG1021410208
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/3
+ description to PICECORR05 Fa0
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/4
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+shutdown
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/5
+ description DE-picwebrr56-temp C211C FN=SRV
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ shutdown
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/6
+ description DE-picwlzfc01b C211A FN=SRV
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/7
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+
+!
+interface GigabitEthernet8/8
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/9
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/10
+ description DD=USPIL-D02C2-OOBFF-02 DI=Port26
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ shutdown
+ no snmp trap link-status
+ channel-group 1 mode active
+!
+interface GigabitEthernet8/11
+ description DD=USPIL-D02C2-OOBFF-02 DI=Port27
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ shutdown
+ no snmp trap link-status
+ channel-group 1 mode active
+!
+interface GigabitEthernet8/12
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/13
+ description USPI1-DR2C2-ECMMC-061
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ no snmp trap link-status
+ flowcontrol send off
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet8/14
+ description USPI1-DR2C2-ECMMC-062
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ no snmp trap link-status
+ flowcontrol send off
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet8/15
+ description USPI1-DR2C2-WBRC-061
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ no snmp trap link-status
+ flowcontrol send off
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet8/16
+ description USPI1-DR2C2-WBRC-062
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ no snmp trap link-status
+ flowcontrol send off
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+!
+interface GigabitEthernet8/17
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/18
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/19
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/20
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/21
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/22
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/23
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/24
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/25
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/26
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/27
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/28
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/29
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/30
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/31
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/32
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/33
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/34
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/35
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/36
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/37
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/38
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/39
+ description to PICCCORR01
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/40
+ description to PICCCORR06 Gi0
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ speed 1000
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/41
+ description to PICCCORR54 Gi2/24
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 1000
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/42
+ description to PICCCORR54 Gi2/24
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 1000
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/43
+ description **USPI1-DR2C2-ECMMC-076_MGMT_0***
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/44
+ description **USPI1-DR2C2-ECMMC-077_MGMT_0***
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/45
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/46
+ description DE-PICCCORR55-NEW
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/47
+ description to PICCCORR24 1/1
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet8/48
+ description to PICCCORR24 1/1
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/1
+ description to PICCCORR24 1/1
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/2
+ description to PICWEBRV06 MGMT f0
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/3
+ description CHG1021410280
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/4
+ description to PICCCORR55 Fa0
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/5
+ description DE-picwebrv06-Temp C211B FN-SRV
+ switchport
+ switchport access vlan 952
+ switchport mode access
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/6
+ description DE-picwebrv06a C211A FN-SRV
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ speed 1000
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/7
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/8
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/9
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ speed 100
+ duplex full
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/10
+ description DD-USPI1-DR2C2-OOBFF-01 DI-Port26
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ channel-group 2 mode active
+!
+interface GigabitEthernet9/11
+ description DD-USPI1-DR2C2-OOBFF-01 DI-Port27
+ switchport
+ switchport trunk encapsulation dot1q
+ switchport trunk allowed vlan 949
+ switchport mode trunk
+ shutdown
+ channel-group 2 mode active
+!
+interface GigabitEthernet9/12
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/13
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/14
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/15
+ description "temp pen test"
+ switchport
+ switchport access vlan 949
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/16
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/24
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/25
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/26
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/27
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/28
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/29
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/30
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/31
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/32
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/33
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/34
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/35
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/36
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/37
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/38
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/39
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/40
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/41
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/42
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/43
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/44
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/45
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/46
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/47
+ description spare
+ switchport
+ switchport access vlan 666
+ switchport mode access
+ shutdown
+ spanning-tree portfast edge
+!
+interface GigabitEthernet9/48
+ description to PICCCORR55 Fa0
+ switchport
+ switchport access vlan 954
+ switchport mode access
+ speed 100
+ duplex full
+ no snmp trap link-status
+ spanning-tree portfast edge
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan549
+ description OOB Trusted Management VLAN
+ ip address 172.18.112.5 255.255.240.0
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+!
+interface Vlan949
+ description OOB Untrusted Firewall External Interface
+ ip address 172.18.126.13 255.255.255.240
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ standby 949 ip 172.18.126.14
+ standby 949 priority 110
+ standby 949 preempt
+!
+interface Vlan950
+ description OOB Untrusted MD Infra
+ ip address 172.18.126.125 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip helper-address 172.18.115.193
+ ip helper-address 172.18.115.194
+ standby 950 ip 172.18.126.65
+ standby 950 priority 110
+ standby 950 preempt
+!
+interface Vlan951
+ description OOB Untrusted MD Servers
+ ip address 172.18.126.126 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ standby 951 ip 172.18.126.126
+ standby 951 priority 110
+ standby 951 preempt
+ no autostate
+!
+interface Vlan952
+ description OOB Untrusted WEBVPN Servers
+ ip address 172.18.126.189 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip helper-address 172.18.115.193
+ ip helper-address 172.18.115.194
+ standby 952 ip 172.18.126.129
+ standby 952 priority 110
+ standby 952 preempt
+!
+interface Vlan953
+ description OOB Untrusted WEBVPN Infra
+ ip address 172.18.126.190 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ standby 953 ip 172.18.126.190
+ standby 953 priority 110
+ standby 953 preempt
+ no autostate
+!
+interface Vlan954
+ description OOB Untrusted CCM Infra OOB
+ ip address 172.18.127.125 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ ip helper-address 172.18.115.193
+ ip helper-address 172.18.115.194
+ standby 954 ip 172.18.127.1
+ standby 954 priority 110
+ standby 954 preempt
+!
+interface Vlan955
+ description OOB Untrusted CCM Servers OOB
+ ip address 172.18.127.126 255.255.255.192
+ no ip redirects
+ no ip unreachables
+ no ip proxy-arp
+ standby 955 ip 172.18.127.65
+ standby 955 priority 110
+ standby 955 preempt
+ no autostate
+!
+ip classless
+ip forward-protocol nd
+no ip forward-protocol udp tftp
+no ip forward-protocol udp nameserver
+no ip forward-protocol udp domain
+no ip forward-protocol udp time
+no ip forward-protocol udp netbios-ns
+no ip forward-protocol udp netbios-dgm
+no ip forward-protocol udp tacacs
+ip forward-protocol udp bootpc
+ip forward-protocol udp bootps
+ip route 0.0.0.0 0.0.0.0 172.18.126.8
+ip route 172.18.112.0 255.255.240.0 172.18.126.8
+ip route 172.21.112.0 255.255.240.0 172.18.126.8
+!
+!
+no ip http server
+no ip http secure-server
+ip tacacs source-interface Vlan949
+!
+logging source-interface Vlan949
+logging 172.21.115.194
+logging 172.18.115.193
+
+snmp-server community triple555 RO 91
+snmp-server trap-source Vlan949
+snmp-server packetsize 2048
+snmp-server location cab 207B
+snmp-server contact ND-NOC-DL@barclays.com
+snmp-server enable traps snmp authentication linkup linkdown coldstart warmstart
+snmp-server enable traps vrrp
+snmp-server enable traps flow-mon
+snmp-server enable traps ds0-busyout
+snmp-server enable traps vswitch
+snmp-server enable traps casa
+snmp-server enable traps vlan-membership
+snmp-server enable traps vlan-mac-limit
+snmp-server enable traps errdisable
+snmp-server enable traps tty
+snmp-server enable traps config-copy
+snmp-server enable traps config
+snmp-server enable traps entity
+snmp-server enable traps vtp
+snmp-server enable traps hsrp
+snmp-server enable traps flash insertion removal
+snmp-server enable traps bridge newroot topologychange
+snmp-server enable traps stpx inconsistency root-inconsistency loop-inconsistency
+snmp-server enable traps syslog
+snmp-server enable traps mac-notification change move threshold
+snmp-server enable traps vlan-access-log
+snmp-server enable traps pim neighbor-change rp-mapping-change invalid-pim-message
+snmp-server enable traps ipmulticast
+snmp-server enable traps msdp
+snmp-server enable traps rsvp
+snmp-server enable traps frame-relay subif
+snmp-server enable traps envmon fan shutdown supply temperature status
+snmp-server enable traps bgp
+snmp-server enable traps isdn call-information
+snmp-server enable traps isdn layer2
+snmp-server enable traps isdn chan-not-avail
+snmp-server enable traps isdn u-interface
+snmp-server enable traps dsp card-status
+snmp-server enable traps voice
+snmp-server enable traps dnis
+snmp-server enable traps port-security
+snmp-server enable traps storm-control
+snmp-server enable traps trunk-ad-status
+snmp-server enable traps license
+snmp-server enable traps vrf
+snmp-server enable traps vlan-membership
+snmp-server enable traps vswitch
+snmp-server enable traps cisco-specific lsa
+snmp-server enable traps vrrp
+snmp-server enable traps bulkstat collection transfer
+snmp-server enable traps ospf state-change
+snmp-server enable traps ospf errors
+snmp-server enable traps ospf retransmit
+snmp-server enable traps ospf lsa
+snmp-server enable traps dhcp snooping bindings
+snmp-server enable traps auth-framework sec-violation
+snmp-server enable traps rep
+snmp-server enable traps ether-channel
+snmp-server enable traps l2pt
+snmp-server enable traps flex-links status
+snmp-server enable traps vpdn session-start session-stop
+snmp-server enable traps srp
+snmp-server enable traps pppoe
+snmp-server enable traps pppoe-client
+snmp-server enable traps bridge
+snmp-server enable traps dot1x
+snmp-server enable traps lldp
+snmp-server enable traps cef resource-failure packet-memory-low
+snmp-server enable traps cef inconsistency
+snmp-server enable traps cpu threshold
+snmp-server host 172.21.115.194 version 2c pric_barclays snmp 
+snmp-server host 172.18.115.193 version 2c pric_barclays snmp 
+snmp-server host 172.21.115.194 version 2c USPI1 udp-port 7162 
+snmp-server host 172.18.115.193 version 2c USPI1 udp-port 7162 
+snmp-server file-transfer access-group 43 protocol tftp
+!
+control-plane
+!
+!
+!
+banner login ^C
+-------------------------------------------------------------------------
+Legal notice: By continuing to access this system, you are acknowledging
+that you have read and agreed with the following statement: You may
+commit a criminal offence if you act outside your authority in relation to
+this computer. The penalty is a FINE, IMPRISONMENT or BOTH.
+------------------------------------------------------------------------
+^C
+!
+line con 0
+ access-class 99 in
+ access-class 99 out
+ transport output none
+line vty 0 4
+ access-class 91 in
+ access-class 99 out
+ exec-timeout 5 0
+ transport input ssh
+ transport output none
+!
+no monitor event-trace timestamps
+ntp clock-period 17180184
+ntp source Vlan949
+ntp access-group peer 95
+ntp update-calendar
+ntp server 172.21.115.194
+ntp server 172.18.115.193
+ntp server 10.252.123.8
+ntp server 10.252.123.2
+ntp server 10.252.123.6
+ntp server 10.252.123.4
+mac-address-table aging-time 900 vlan 949
+mac-address-table aging-time 900 vlan 950
+mac-address-table aging-time 900 vlan 951
+mac-address-table aging-time 900 vlan 952
+mac-address-table aging-time 900 vlan 953
+mac-address-table aging-time 900 vlan 954
+mac-address-table aging-time 900 vlan 955
+!
+end
